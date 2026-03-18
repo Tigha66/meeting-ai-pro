@@ -2,9 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>MeetingAI Pro - Never Take Meeting Notes Again</title>
     <meta name="description" content="AI that joins your meetings, transcribes everything, and generates smart summaries. Save 5-10 hours/week per employee.">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#0ea5e9">
+    <meta name="apple-theme-color" content="#0ea5e9">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MeetingAI">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="MeetingAI">
+    <meta name="msapplication-TileColor" content="#0ea5e9">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512x512.png">
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Preconnect to important origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -997,6 +1022,169 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeModal();
         });
+        
+        // ============================================
+        // PWA Service Worker Registration
+        // ============================================
+        
+        let deferredPrompt;
+        const installButton = document.getElementById('install-pwa');
+        
+        // Register service worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('[PWA] Service Worker registered:', registration.scope);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New content available
+                                    showUpdatePrompt();
+                                }
+                            });
+                        });
+                    })
+                    .catch((error) => {
+                        console.error('[PWA] Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        // Handle install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('[PWA] beforeinstallprompt event fired');
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallPrompt();
+        });
+        
+        // Handle app installed
+        window.addEventListener('appinstalled', () => {
+            console.log('[PWA] App installed successfully');
+            hideInstallPrompt();
+            deferredPrompt = null;
+        });
+        
+        // Show install prompt UI
+        function showInstallPrompt() {
+            const prompt = document.getElementById('pwa-install-prompt');
+            if (prompt) {
+                prompt.classList.remove('hidden');
+                prompt.classList.add('animate-slide-up');
+            }
+        }
+        
+        // Hide install prompt
+        function hideInstallPrompt() {
+            const prompt = document.getElementById('pwa-install-prompt');
+            if (prompt) {
+                prompt.classList.add('hidden');
+            }
+        }
+        
+        // Handle install button click
+        async function handleInstallClick() {
+            if (!deferredPrompt) {
+                console.log('[PWA] No install prompt available');
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log('[PWA] User response to install prompt:', outcome);
+            deferredPrompt = null;
+            hideInstallPrompt();
+        }
+        
+        // Show update available prompt
+        function showUpdatePrompt() {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                new Notification('MeetingAI Pro Update Available', {
+                    body: 'A new version is available. Refresh to get the latest features!',
+                    icon: '/icons/icon-192x192.png',
+                    badge: '/icons/badge-72x72.png'
+                });
+            }
+        }
+        
+        // Request notification permission
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
+        }
+        
+        // Online/Offline handling
+        window.addEventListener('online', () => {
+            console.log('[PWA] Back online');
+            document.body.classList.remove('offline');
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log('[PWA] Gone offline');
+            document.body.classList.add('offline');
+            showOfflineNotification();
+        });
+        
+        function showOfflineNotification() {
+            const notification = document.getElementById('offline-notification');
+            if (notification) {
+                notification.classList.remove('hidden');
+                notification.classList.add('animate-slide-down');
+            }
+        }
+        
+        function hideOfflineNotification() {
+            const notification = document.getElementById('offline-notification');
+            if (notification) {
+                notification.classList.add('hidden');
+            }
+        }
     </script>
+    
+    <!-- PWA Install Prompt Banner -->
+    <div id="pwa-install-prompt" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 glass rounded-2xl p-4 z-[9999] hidden shadow-2xl">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white">
+                    <i data-lucide="download" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-slate-900 text-sm">Install MeetingAI</div>
+                    <div class="text-xs text-slate-600">Access faster, offline support</div>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="handleInstallClick()" class="btn-primary text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                    Install
+                </button>
+                <button onclick="hideInstallPrompt()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Offline Notification -->
+    <div id="offline-notification" class="fixed top-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-slate-900 text-white rounded-2xl p-4 z-[9999] hidden shadow-2xl">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-orange-500 rounded-xl flex items-center justify-center text-white">
+                    <i data-lucide="wifi-off" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <div class="font-bold text-sm">You're Offline</div>
+                    <div class="text-xs text-slate-300">Some features may be limited</div>
+                </div>
+            </div>
+            <button onclick="hideOfflineNotification()" class="text-slate-400 hover:text-white p-1">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
 </body>
 </html>

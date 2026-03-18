@@ -11,6 +11,12 @@
       "claimToken": "8edbb097c50a40e6c75f98d17cd14967bf3cd4c9b3448a6d7769755f11c4e69d",
       "claimUrl": "https://here.now/claim?slug=vowful-basin-r7r5&token=8edbb097c50a40e6c75f98d17cd14967bf3cd4c9b3448a6d7769755f11c4e69d",
       "expiresAt": "2026-03-19T04:17:29.091Z"
+    },
+    "blissful-koan-accc": {
+      "siteUrl": "https://blissful-koan-accc.here.now/",
+      "claimToken": "082b0a26080d76f2c32d978459121ad8252fb97d31e8a9a1a51e3fb7254b5922",
+      "claimUrl": "https://here.now/claim?slug=blissful-koan-accc&token=082b0a26080d76f2c32d978459121ad8252fb97d31e8a9a1a51e3fb7254b5922",
+      "expiresAt": "2026-03-19T04:27:27.354Z"
     }
   }
 }
