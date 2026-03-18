@@ -1,0 +1,10 @@
+{
+  "publishes": {
+    "quick-willow-jacc": {
+      "siteUrl": "https://quick-willow-jacc.here.now/",
+      "claimToken": "8eea9a28603293ab0b41e0da781581e2e6a57b31221ee9333459f427b706ac85",
+      "claimUrl": "https://here.now/claim?slug=quick-willow-jacc&token=8eea9a28603293ab0b41e0da781581e2e6a57b31221ee9333459f427b706ac85",
+      "expiresAt": "2026-03-19T01:06:32.233Z"
+    }
+  }
+}
