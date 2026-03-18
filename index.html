@@ -9,7 +9,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -17,40 +17,84 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
+    <!-- Framer Motion-like animations -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    
     <!-- Custom Config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
                     },
                     colors: {
                         primary: {
                             50: '#f0f9ff', 100: '#e0f2fe', 200: '#bae6fd', 300: '#7dd3fc',
                             400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1',
-                            800: '#075985', 900: '#0c4a6e',
+                            800: '#075985', 900: '#0c4a6e', 950: '#082f49',
                         },
                         accent: {
                             50: '#fdf4ff', 100: '#fae8ff', 200: '#f5d0fe', 300: '#f0abfc',
                             400: '#e879f9', 500: '#d946ef', 600: '#c026d3', 700: '#a21caf',
+                            800: '#86198f', 900: '#701a75',
+                        },
+                        success: {
+                            50: '#f0fdf4', 500: '#22c55e', 600: '#16a34a',
                         }
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
-                        'gradient': 'gradient 8s linear infinite',
+                        'float-delayed': 'float 6s ease-in-out 3s infinite',
+                        'gradient': 'gradient 15s ease infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'slide-down': 'slideDown 0.6s ease-out',
+                        'fade-in': 'fadeIn 0.8s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
                     },
                     keyframes: {
                         float: {
-                            '0%, 100%': { transform: 'translateY(0px)' },
-                            '50%': { transform: 'translateY(-20px)' },
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-30px) rotate(5deg)' },
                         },
                         gradient: {
                             '0%, 100%': { backgroundPosition: '0% 50%' },
                             '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        slideDown: {
+                            '0%': { opacity: '0', transform: 'translateY(-40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.9)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
                         }
                     },
-                    backgroundSize: { '300%': '300%' },
+                    backgroundSize: { '300%': '300%', '400%': '400%' },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'hero-pattern': "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+                    },
+                    boxShadow: {
+                        'glow': '0 0 40px rgba(14, 165, 233, 0.3)',
+                        'glow-lg': '0 0 60px rgba(14, 165, 233, 0.4)',
+                        'inner-glow': 'inset 0 0 40px rgba(14, 165, 233, 0.1)',
+                    }
                 }
             }
         }
@@ -58,78 +102,223 @@
     
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
         }
         
-        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        html { scroll-behavior: smooth; }
         
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden;
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+        }
+        
+        /* Glassmorphism */
         .glass {
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid var(--glass-border);
             box-shadow: var(--glass-shadow);
         }
         
+        .glass-dark {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Gradient backgrounds */
         .gradient-bg {
             background: linear-gradient(-45deg, #0ea5e9, #8b5cf6, #d946ef, #0ea5e9);
-            background-size: 300% 300%;
-            animation: gradient 8s ease infinite;
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        .gradient-bg-reverse {
+            background: linear-gradient(-45deg, #d946ef, #8b5cf6, #0ea5e9, #d946ef);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
         }
         
         .gradient-text {
-            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #d946ef 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 35%, #d946ef 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: gradient 8s ease infinite;
+        }
+        
+        .gradient-text-alt {
+            background: linear-gradient(135deg, #d946ef 0%, #8b5cf6 50%, #0ea5e9 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
+        /* Animated blobs */
         .blob {
             border-radius: 9999px;
-            filter: blur(80px);
-            opacity: 0.6;
-            animation: float 10s ease-in-out infinite;
+            filter: blur(100px);
+            opacity: 0.5;
+            position: absolute;
         }
         
+        /* Card hover effects */
         .card-hover {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .card-hover:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 30px 60px -12px rgba(14, 165, 233, 0.3);
+            border-color: rgba(14, 165, 233, 0.3);
         }
         
+        /* Button styles */
         .btn-primary {
             background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
         }
         
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 25px 50px rgba(14, 165, 233, 0.5);
         }
         
-        .modal-backdrop {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(14, 165, 233, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
+        .btn-secondary:hover {
+            background: white;
+            border-color: rgba(14, 165, 233, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
+        }
+        
+        /* Feature cards */
+        .feature-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Pricing cards */
+        .pricing-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+        }
+        
+        .pricing-card.featured {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+            color: white;
+        }
+        
+        /* Testimonial cards */
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.8) 100%);
+        }
+        
+        /* Animated gradient border */
+        .gradient-border {
+            position: relative;
+            background: white;
+            border-radius: 1rem;
+        }
+        
+        .gradient-border::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6, #d946ef);
+            border-radius: inherit;
+            z-index: -1;
+            background-size: 200% 200%;
+            animation: gradient 8s ease infinite;
+        }
+        
+        /* Shimmer effect */
+        .shimmer {
+            background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s linear infinite;
+        }
+        
+        /* Scroll animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #0284c7, #7c3aed);
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .hero-title { font-size: 2.5rem !important; }
+            .hero-title { font-size: 2.75rem !important; line-height: 1.1 !important; }
+            .hero-subtitle { font-size: 1.125rem !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 antialiased">
+<body class="antialiased">
     <!-- Navigation -->
-    <nav class="fixed w-full glass z-50">
+    <nav class="fixed w-full glass z-50 transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white text-xl font-bold">M</div>
+                    <div class="w-11 h-11 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl font-bold shadow-glow">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
                     <span class="text-xl font-bold gradient-text">MeetingAI Pro</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">Features</a>
+                    <a href="#how-it-works" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">How It Works</a>
+                    <a href="#pricing" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">Pricing</a>
+                    <a href="#testimonials" class="text-slate-600 hover:text-slate-900 font-medium transition-colors">Reviews</a>
                 </div>
                 <button onclick="openModal()" class="btn-primary text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg">
                     Start Free Trial
@@ -139,77 +328,150 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        <div class="absolute inset-0 overflow-hidden">
-            <div class="blob w-96 h-96 bg-primary-400/30 top-20 left-20"></div>
-            <div class="blob w-80 h-80 bg-accent-400/30 bottom-20 right-20" style="animation-delay: -3s;"></div>
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-hero-pattern">
+        <!-- Animated background blobs -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="blob w-[600px] h-[600px] bg-gradient-radial from-primary-400/40 to-transparent top-[-200px] left-[-200px] animate-float"></div>
+            <div class="blob w-[500px] h-[500px] bg-gradient-radial from-accent-400/40 to-transparent bottom-[-100px] right-[-100px] animate-float-delayed"></div>
+            <div class="blob w-[400px] h-[400px] bg-gradient-radial from-primary-300/30 to-transparent top-1/2 left-1/2 animate-pulse-slow"></div>
         </div>
         
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
             <div class="text-center max-w-5xl mx-auto">
-                <div class="inline-flex items-center space-x-2 glass px-4 py-2 rounded-full mb-8 card-hover">
-                    <span class="flex h-2 w-2 relative">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                <!-- Beta badge -->
+                <div class="inline-flex items-center space-x-2 glass px-5 py-2.5 rounded-full mb-8 card-hover animate-slide-up">
+                    <span class="flex h-2.5 w-2.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-500 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-success-500"></span>
                     </span>
-                    <span class="text-sm font-medium text-slate-600">Now in Beta - Join 1,000+ Teams</span>
+                    <span class="text-sm font-semibold text-slate-700">Now in Beta — Join 1,000+ Teams</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400"></i>
                 </div>
                 
-                <h1 class="hero-title text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.1]">
+                <!-- Main headline -->
+                <h1 class="hero-title text-6xl md:text-7xl lg:text-8xl font-black mb-8 leading-[1.05] animate-slide-up" style="animation-delay: 0.1s;">
                     Never Take<br />
-                    <span class="gradient-text">Meeting Notes</span> Again
+                    <span class="gradient-text">Meeting Notes</span><br />
+                    Again
                 </h1>
                 
-                <p class="text-xl md:text-2xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed">
-                    AI that joins your meetings, transcribes everything, and generates smart summaries. 
-                    <span class="font-semibold text-slate-900">Save 5-10 hours/week per employee.</span>
+                <!-- Subheadline -->
+                <p class="hero-subtitle text-xl md:text-2xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed animate-slide-up" style="animation-delay: 0.2s;">
+                    AI that joins your meetings, transcribes everything with <span class="font-bold text-slate-900">95%+ accuracy</span>, 
+                    and generates smart summaries. <span class="font-semibold text-primary-600">Save 5-10 hours/week per employee.</span>
                 </p>
                 
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-                    <button onclick="openModal()" class="group btn-primary text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-2xl flex items-center justify-center space-x-2">
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-scale-in" style="animation-delay: 0.3s;">
+                    <button onclick="openModal()" class="group btn-primary text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-glow-lg flex items-center justify-center space-x-3">
                         <span>Start Free Trial</span>
                         <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
                     </button>
-                    <button class="group glass px-8 py-4 rounded-2xl font-bold text-lg hover:bg-white transition-all flex items-center justify-center space-x-2">
-                        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center text-white">
-                            <i data-lucide="play" class="w-4 h-4 ml-0.5"></i>
+                    <button class="group btn-secondary px-10 py-5 rounded-2xl font-bold text-lg flex items-center justify-center space-x-3">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition-transform">
+                            <i data-lucide="play" class="w-5 h-5 ml-0.5"></i>
                         </div>
                         <span>Watch 90-Second Demo</span>
                     </button>
                 </div>
                 
-                <div class="flex flex-wrap justify-center items-center gap-8 text-sm text-slate-500 mb-16">
+                <!-- Trust indicators -->
+                <div class="flex flex-wrap justify-center items-center gap-6 text-sm text-slate-500 mb-16 animate-fade-in" style="animation-delay: 0.4s;">
                     <div class="flex items-center space-x-2">
-                        <i data-lucide="circle-check" class="w-5 h-5 text-green-500"></i>
-                        <span>No credit card required</span>
+                        <i data-lucide="circle-check" class="w-5 h-5 text-success-500"></i>
+                        <span class="font-medium">No credit card required</span>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <i data-lucide="circle-check" class="w-5 h-5 text-green-500"></i>
-                        <span>14-day free trial</span>
+                        <i data-lucide="circle-check" class="w-5 h-5 text-success-500"></i>
+                        <span class="font-medium">14-day free trial</span>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <i data-lucide="circle-check" class="w-5 h-5 text-green-500"></i>
-                        <span>Works with Zoom, Teams, Meet</span>
+                        <i data-lucide="circle-check" class="w-5 h-5 text-success-500"></i>
+                        <span class="font-medium">Works with Zoom, Teams, Meet</span>
                     </div>
                 </div>
                 
-                <div class="glass rounded-3xl p-8 max-w-2xl mx-auto card-hover">
-                    <div class="flex items-center justify-center space-x-2 mb-4">
-                        <div class="flex text-yellow-400">
-                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
-                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
-                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
-                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
-                            <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                <!-- Dashboard Preview -->
+                <div class="gradient-border p-1 max-w-5xl mx-auto card-hover animate-slide-up" style="animation-delay: 0.5s;">
+                    <div class="glass-dark rounded-2xl overflow-hidden">
+                        <div class="flex items-center space-x-2 px-4 py-3 border-b border-white/10">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <div class="flex-1 text-center">
+                                <span class="text-xs text-slate-400 font-mono">meetingai.pro/dashboard</span>
+                            </div>
                         </div>
-                        <span class="font-bold text-slate-900 text-lg">4.9/5</span>
-                    </div>
-                    <p class="text-slate-600 mb-4">"MeetingAI saves me 8 hours a week. The summaries are incredibly accurate and the action items are spot-on. Game changer!"</p>
-                    <div class="flex items-center justify-center space-x-3">
-                        <div class="w-10 h-10 gradient-bg rounded-full flex items-center justify-center text-white font-bold">MK</div>
-                        <div class="text-left">
-                            <p class="font-semibold text-slate-900">Michael Kim</p>
-                            <p class="text-sm text-slate-500">VP of Sales, TechCorp</p>
+                        <div class="p-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                            <div class="grid grid-cols-3 gap-6 mb-6">
+                                <div class="glass-dark rounded-xl p-6">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                                            <i data-lucide="video" class="w-5 h-5 text-primary-400"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-2xl font-bold text-white">247</div>
+                                            <div class="text-xs text-slate-400">Meetings Processed</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="glass-dark rounded-xl p-6">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 rounded-lg bg-accent-500/20 flex items-center justify-center">
+                                            <i data-lucide="clock" class="w-5 h-5 text-accent-400"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-2xl font-bold text-white">892h</div>
+                                            <div class="text-xs text-slate-400">Time Saved</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="glass-dark rounded-xl p-6">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 rounded-lg bg-success-500/20 flex items-center justify-center">
+                                            <i data-lucide="check" class="w-5 h-5 text-success-400"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-2xl font-bold text-white">1,847</div>
+                                            <div class="text-xs text-slate-400">Action Items</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-dark rounded-xl p-6">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="text-white font-semibold">Recent Meetings</h3>
+                                    <span class="text-xs text-slate-400">Last 7 days</span>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-4 rounded-lg bg-white/5">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-full gradient-bg flex items-center justify-center text-white font-bold">Q</div>
+                                            <div>
+                                                <div class="text-white font-medium">Q4 Planning Session</div>
+                                                <div class="text-xs text-slate-400">Today, 10:00 AM • 45 min</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-success-500/20 text-success-400">Processed</span>
+                                            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between p-4 rounded-lg bg-white/5">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-10 h-10 rounded-full bg-accent-500 flex items-center justify-center text-white font-bold">S</div>
+                                            <div>
+                                                <div class="text-white font-medium">Sprint Review</div>
+                                                <div class="text-xs text-slate-400">Yesterday, 2:00 PM • 60 min</div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="px-3 py-1 rounded-full text-xs font-medium bg-success-500/20 text-success-400">Processed</span>
+                                            <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,255 +479,524 @@
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- Logos Section -->
     <section class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-5xl font-black mb-4 gradient-text">Everything You Need</h2>
-                <p class="text-xl text-slate-600 max-w-3xl mx-auto">Automate your entire meeting workflow</p>
+            <p class="text-center text-slate-500 font-medium mb-12">TRUSTED BY INNOVATIVE TEAMS AT</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center opacity-60">
+                <div class="flex justify-center"><i data-lucide="triangle" class="w-16 h-16 text-slate-400"></i></div>
+                <div class="flex justify-center"><i data-lucide="circle" class="w-16 h-16 text-slate-400"></i></div>
+                <div class="flex justify-center"><i data-lucide="square" class="w-16 h-16 text-slate-400"></i></div>
+                <div class="flex justify-center"><i data-lucide="hexagon" class="w-16 h-16 text-slate-400"></i></div>
+                <div class="flex justify-center"><i data-lucide="pentagon" class="w-16 h-16 text-slate-400"></i></div>
+                <div class="flex justify-center"><i data-lucide="octagon" class="w-16 h-16 text-slate-400"></i></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-32 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="blob w-[500px] h-[500px] bg-gradient-radial from-primary-300/20 to-transparent top-0 right-0"></div>
+            <div class="blob w-[400px] h-[400px] bg-gradient-radial from-accent-300/20 to-transparent bottom-0 left-0"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+                <div class="inline-flex items-center space-x-2 glass px-4 py-2 rounded-full mb-6">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-primary-500"></i>
+                    <span class="text-sm font-semibold text-primary-600">POWERFUL FEATURES</span>
+                </div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6">
+                    Everything you need to<br />
+                    <span class="gradient-text">master your meetings</span>
+                </h2>
+                <p class="text-xl text-slate-600 leading-relaxed">
+                    From automatic transcription to intelligent action items, MeetingAI Pro handles it all so you can focus on what matters.
+                </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl mb-6">🎙️</div>
-                    <h3 class="text-2xl font-bold mb-3">Auto-Transcription</h3>
-                    <p class="text-slate-600">95%+ accurate transcription in real-time. Works with Zoom, Google Meet, and Microsoft Teams.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card rounded-3xl p-8 card-hover reveal">
+                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg">
+                        <i data-lucide="mic" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-900">Live Transcription</h3>
+                    <p class="text-slate-600 leading-relaxed">95%+ accuracy real-time transcription that captures every word, even with multiple speakers and accents.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl mb-6">📝</div>
-                    <h3 class="text-2xl font-bold mb-3">Smart Summaries</h3>
-                    <p class="text-slate-600">AI-generated summaries that capture key points, decisions, and context. No more rambling notes.</p>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card rounded-3xl p-8 card-hover reveal" style="transition-delay: 100ms;">
+                    <div class="w-14 h-14 gradient-bg-reverse rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg">
+                        <i data-lucide="brain" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-900">Smart Summaries</h3>
+                    <p class="text-slate-600 leading-relaxed">AI-generated summaries that capture key decisions, insights, and takeaways in seconds.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl mb-6">✅</div>
-                    <h3 class="text-2xl font-bold mb-3">Action Items</h3>
-                    <p class="text-slate-600">Automatically extracts tasks and assigns them to team members. Integrates with Asana, Jira, Monday.</p>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card rounded-3xl p-8 card-hover reveal" style="transition-delay: 200ms;">
+                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg">
+                        <i data-lucide="circle-check" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-900">Action Items</h3>
+                    <p class="text-slate-600 leading-relaxed">Automatically extract tasks, assign owners, and sync to Asana, Jira, or your favorite PM tool.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl mb-6">🔍</div>
-                    <h3 class="text-2xl font-bold mb-3">Search & Recall</h3>
-                    <p class="text-slate-600">Search all your meetings instantly. "What did we decide about pricing last month?" Get instant answers.</p>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card rounded-3xl p-8 card-hover reveal">
+                    <div class="w-14 h-14 gradient-bg-reverse rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg">
+                        <i data-lucide="video" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-900">Auto-Join Meetings</h3>
+                    <p class="text-slate-600 leading-relaxed">Automatically joins Zoom, Google Meet, and Teams calls. No manual recording needed.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl mb-6">📊</div>
-                    <h3 class="text-2xl font-bold mb-3">Team Analytics</h3>
-                    <p class="text-slate-600">Track meeting time, costs, and ROI. Identify meeting overload and optimize team productivity.</p>
+                
+                <!-- Feature 5 -->
+                <div class="feature-card rounded-3xl p-8 card-hover reveal" style="transition-delay: 100ms;">
+                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg">
+                        <i data-lucide="search" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-900">Smart Search</h3>
+                    <p class="text-slate-600 leading-relaxed">Search across all your meetings. Find any conversation, decision, or topic instantly.</p>
                 </div>
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <div class="w-14 h-14 gradient-bg rounded-2xl flex items-center justify-center text-white text-2xl mb-6">🔗</div>
-                    <h3 class="text-2xl font-bold mb-3">100+ Integrations</h3>
-                    <p class="text-slate-600">Slack, Notion, Salesforce, HubSpot, and more. Your meeting data flows everywhere automatically.</p>
+                
+                <!-- Feature 6 -->
+                <div class="feature-card rounded-3xl p-8 card-hover reveal" style="transition-delay: 200ms;">
+                    <div class="w-14 h-14 gradient-bg-reverse rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg">
+                        <i data-lucide="share-2" class="w-7 h-7"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3 text-slate-900">Instant Sharing</h3>
+                    <p class="text-slate-600 leading-relaxed">Auto-send meeting notes to all attendees via email, Slack, or your preferred channel.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-32 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+                <div class="inline-flex items-center space-x-2 glass px-4 py-2 rounded-full mb-6">
+                    <i data-lucide="workflow" class="w-4 h-4 text-accent-500"></i>
+                    <span class="text-sm font-semibold text-accent-600">SIMPLE WORKFLOW</span>
+                </div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6">
+                    Works like <span class="gradient-text-alt">magic</span>
+                </h2>
+                <p class="text-xl text-slate-600 leading-relaxed">
+                    Three simple steps to transform how your team handles meetings.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-12">
+                <!-- Step 1 -->
+                <div class="text-center reveal">
+                    <div class="w-24 h-24 gradient-bg rounded-3xl flex items-center justify-center text-white text-4xl font-black mx-auto mb-6 shadow-glow-lg">
+                        1
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-900">Connect Your Calendar</h3>
+                    <p class="text-slate-600 leading-relaxed text-lg">Link Google Calendar or Outlook. MeetingAI automatically detects upcoming meetings.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="text-center reveal" style="transition-delay: 200ms;">
+                    <div class="w-24 h-24 gradient-bg-reverse rounded-3xl flex items-center justify-center text-white text-4xl font-black mx-auto mb-6 shadow-glow-lg">
+                        2
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-900">AI Joins Automatically</h3>
+                    <p class="text-slate-600 leading-relaxed text-lg">Our AI bot joins your calls, records, and transcribes in real-time with 95%+ accuracy.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="text-center reveal" style="transition-delay: 400ms;">
+                    <div class="w-24 h-24 gradient-bg rounded-3xl flex items-center justify-center text-white text-4xl font-black mx-auto mb-6 shadow-glow-lg">
+                        3
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 text-slate-900">Get Smart Notes</h3>
+                    <p class="text-slate-600 leading-relaxed text-lg">Receive AI-generated summaries, action items, and insights within 2 minutes of meeting end.</p>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Pricing Section -->
-    <section class="py-20 bg-gradient-to-br from-primary-50 via-white to-accent-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-5xl font-black mb-4 gradient-text">Simple Pricing</h2>
-                <p class="text-xl text-slate-600">Save 20% with annual billing</p>
+    <section id="pricing" class="py-32 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="blob w-[600px] h-[600px] bg-gradient-radial from-accent-300/20 to-transparent bottom-0 right-0"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+                <div class="inline-flex items-center space-x-2 glass px-4 py-2 rounded-full mb-6">
+                    <i data-lucide="dollar-sign" class="w-4 h-4 text-success-500"></i>
+                    <span class="text-sm font-semibold text-success-600">SIMPLE PRICING</span>
+                </div>
+                <h2 class="text-5xl md:text-6xl font-black mb-6">
+                    Plans that scale with<br />
+                    <span class="gradient-text">your team</span>
+                </h2>
+                <p class="text-xl text-slate-600 leading-relaxed">
+                    Start free, upgrade as you grow. No hidden fees, no surprises.
+                </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <h3 class="text-2xl font-bold mb-2">Free</h3>
-                    <p class="text-slate-600 mb-6">For individuals</p>
-                    <div class="mb-6"><span class="text-5xl font-black">$0</span><span class="text-slate-600">/month</span></div>
-                    <ul class="space-y-3 mb-8">
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>5 meetings/month</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>30 min per meeting</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>Basic summaries</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>Email sharing</span></li>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Free Plan -->
+                <div class="pricing-card rounded-3xl p-8 card-hover reveal border border-slate-200">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-2">Free</h3>
+                        <p class="text-slate-600">Perfect for individuals</p>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-5xl font-black text-slate-900">$0</span>
+                        <span class="text-slate-600">/month</span>
+                    </div>
+                    <button class="w-full btn-secondary py-4 rounded-xl font-bold mb-8">
+                        Get Started
+                    </button>
+                    <ul class="space-y-4">
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">5 meetings/month</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">30 min per meeting</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">Basic summaries</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">Email sharing</span>
+                        </li>
                     </ul>
-                    <button onclick="openModal()" class="w-full border-2 border-slate-300 py-3 rounded-xl font-semibold hover:border-primary-500 transition-all">Get Started</button>
                 </div>
                 
-                <div class="gradient-bg p-8 rounded-3xl shadow-2xl transform scale-105 card-hover relative">
-                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-gray-900 px-4 py-1 rounded-full text-sm font-bold">⭐ MOST POPULAR</div>
-                    <h3 class="text-2xl font-bold mb-2 text-white">Pro</h3>
-                    <p class="text-indigo-100 mb-6">For professionals</p>
-                    <div class="mb-6"><span class="text-5xl font-black text-white">$15</span><span class="text-indigo-100">/user/month</span></div>
-                    <ul class="space-y-3 mb-8 text-white">
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 flex-shrink-0 mt-0.5"></i><span>Unlimited meetings</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 flex-shrink-0 mt-0.5"></i><span>Advanced AI summaries</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 flex-shrink-0 mt-0.5"></i><span>Action items</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 flex-shrink-0 mt-0.5"></i><span>Slack, Notion integrations</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 flex-shrink-0 mt-0.5"></i><span>Search all meetings</span></li>
+                <!-- Pro Plan (Featured) -->
+                <div class="pricing-card featured rounded-3xl p-8 card-hover reveal transform scale-105 shadow-2xl relative">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+                        <span class="bg-white text-primary-600 px-4 py-1 rounded-full text-sm font-bold shadow-lg">MOST POPULAR</span>
+                    </div>
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-white mb-2">Pro</h3>
+                        <p class="text-white/80">For professionals</p>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-5xl font-black text-white">$15</span>
+                        <span class="text-white/80">/month</span>
+                    </div>
+                    <button class="w-full bg-white text-primary-600 py-4 rounded-xl font-bold mb-8 hover:bg-slate-100 transition-colors">
+                        Start Free Trial
+                    </button>
+                    <ul class="space-y-4">
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-white flex-shrink-0"></i>
+                            <span class="text-white">Unlimited meetings</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-white flex-shrink-0"></i>
+                            <span class="text-white">Advanced AI summaries</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-white flex-shrink-0"></i>
+                            <span class="text-white">100+ integrations</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-white flex-shrink-0"></i>
+                            <span class="text-white">Action item automation</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-white flex-shrink-0"></i>
+                            <span class="text-white">Priority support</span>
+                        </li>
                     </ul>
-                    <button onclick="openModal()" class="w-full bg-white text-indigo-600 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all">Start 14-Day Free Trial</button>
                 </div>
                 
-                <div class="glass p-8 rounded-3xl card-hover">
-                    <h3 class="text-2xl font-bold mb-2">Team</h3>
-                    <p class="text-slate-600 mb-6">For teams (5-50)</p>
-                    <div class="mb-6"><span class="text-5xl font-black">$25</span><span class="text-slate-600">/user/month</span></div>
-                    <ul class="space-y-3 mb-8">
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>Everything in Pro</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>Team analytics</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>Admin dashboard</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>CRM integrations</span></li>
-                        <li class="flex items-start space-x-2"><i data-lucide="check" class="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5"></i><span>Priority support</span></li>
+                <!-- Team Plan -->
+                <div class="pricing-card rounded-3xl p-8 card-hover reveal border border-slate-200">
+                    <div class="mb-6">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-2">Team</h3>
+                        <p class="text-slate-600">For growing teams</p>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-5xl font-black text-slate-900">$25</span>
+                        <span class="text-slate-600">/user/month</span>
+                    </div>
+                    <button class="w-full btn-secondary py-4 rounded-xl font-bold mb-8">
+                        Contact Sales
+                    </button>
+                    <ul class="space-y-4">
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">Everything in Pro</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">Team analytics</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">Admin dashboard</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">Custom templates</span>
+                        </li>
+                        <li class="flex items-center space-x-3">
+                            <i data-lucide="check" class="w-5 h-5 text-success-500 flex-shrink-0"></i>
+                            <span class="text-slate-700">Dedicated support</span>
+                        </li>
                     </ul>
-                    <button onclick="openModal()" class="w-full btn-primary text-white py-3 rounded-xl font-semibold">Start Free Trial</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Waitlist Modal -->
-    <div id="waitlistModal" class="fixed inset-0 modal-backdrop z-[100] hidden items-center justify-center p-4">
-        <div class="glass bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h3 class="text-3xl font-bold gradient-text">Start Your Free Trial</h3>
-                    <p class="text-slate-600 mt-1">Join 1,000+ teams saving 5-10 hours/week</p>
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-32 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-20 reveal">
+                <div class="inline-flex items-center space-x-2 glass px-4 py-2 rounded-full mb-6">
+                    <i data-lucide="heart" class="w-4 h-4 text-accent-500"></i>
+                    <span class="text-sm font-semibold text-accent-600">LOVED BY TEAMS</span>
                 </div>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors p-2 hover:bg-slate-100 rounded-xl">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <h2 class="text-5xl md:text-6xl font-black mb-6">
+                    Don't just take<br />
+                    <span class="gradient-text">our word for it</span>
+                </h2>
             </div>
             
-            <form id="waitlistForm" onsubmit="handleSubmit(event)" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Full Name *</label>
-                    <input type="text" id="name" required class="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:outline-none transition-all bg-slate-50" placeholder="John Doe">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card rounded-3xl p-8 card-hover reveal border border-slate-200">
+                    <div class="flex text-yellow-400 mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-slate-700 text-lg leading-relaxed mb-6">"MeetingAI has saved our team countless hours. The summaries are incredibly accurate and the action items feature is a game-changer."</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white font-bold">SK</div>
+                        <div>
+                            <div class="font-bold text-slate-900">Sarah Kim</div>
+                            <div class="text-sm text-slate-600">VP of Product, TechCorp</div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Work Email *</label>
-                    <input type="email" id="email" required class="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:outline-none transition-all bg-slate-50" placeholder="john@company.com">
+                
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card rounded-3xl p-8 card-hover reveal border border-slate-200" style="transition-delay: 100ms;">
+                    <div class="flex text-yellow-400 mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-slate-700 text-lg leading-relaxed mb-6">"The transcription accuracy is better than any tool we've tried. It's like having a personal assistant in every meeting."</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg-reverse rounded-full flex items-center justify-center text-white font-bold">MJ</div>
+                        <div>
+                            <div class="font-bold text-slate-900">Marcus Johnson</div>
+                            <div class="text-sm text-slate-600">CEO, StartupXYZ</div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Company Name *</label>
-                    <input type="text" id="company" required class="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:outline-none transition-all bg-slate-50" placeholder="Your Company">
+                
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card rounded-3xl p-8 card-hover reveal border border-slate-200" style="transition-delay: 200ms;">
+                    <div class="flex text-yellow-400 mb-4">
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                        <i data-lucide="star" class="w-5 h-5 fill-current"></i>
+                    </div>
+                    <p class="text-slate-700 text-lg leading-relaxed mb-6">"We've cut our meeting follow-up time by 80%. The ROI was immediate. Every knowledge worker needs this."</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white font-bold">EL</div>
+                        <div>
+                            <div class="font-bold text-slate-900">Emma Liu</div>
+                            <div class="text-sm text-slate-600">Director of Ops, ScaleCo</div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Team Size</label>
-                    <select id="teamSize" class="w-full px-4 py-3.5 border-2 border-slate-200 rounded-xl focus:border-primary-500 focus:outline-none transition-all bg-slate-50">
-                        <option value="">Select...</option>
-                        <option value="1">Just me (1)</option>
-                        <option value="2-10">2-10</option>
-                        <option value="11-50">11-50</option>
-                        <option value="51-200">51-200</option>
-                        <option value="200+">200+</option>
-                    </select>
-                </div>
-                <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg">
-                    Start 14-Day Free Trial
-                    <i data-lucide="arrow-right" class="inline ml-2 w-5 h-5"></i>
-                </button>
-            </form>
-            
-            <p class="text-xs text-slate-500 mt-6 text-center flex items-center justify-center space-x-2">
-                <i data-lucide="lock" class="w-3 h-3"></i>
-                <span>No credit card required. 14-day free trial.</span>
-            </p>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 modal-backdrop z-[100] hidden items-center justify-center p-4">
-        <div class="glass bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
-            <div class="w-20 h-20 gradient-bg rounded-full flex items-center justify-center mx-auto mb-6">
-                <i data-lucide="check" class="w-10 h-10 text-white"></i>
-            </div>
-            <h3 class="text-3xl font-bold gradient-text mb-4">You're All Set!</h3>
-            <p class="text-slate-600 mb-8">
-                Thanks for signing up! We'll send you a welcome email with next steps. Your 14-day free trial starts now.
+    <!-- CTA Section -->
+    <section class="py-32 relative overflow-hidden">
+        <div class="absolute inset-0 gradient-bg"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-primary-600/90 via-accent-600/90 to-primary-700/90"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center reveal">
+            <h2 class="text-5xl md:text-6xl font-black text-white mb-6">
+                Ready to transform your meetings?
+            </h2>
+            <p class="text-2xl text-white/90 mb-10 leading-relaxed">
+                Join 1,000+ teams saving 5-10 hours per week with MeetingAI Pro.
             </p>
-            <button onclick="closeSuccessModal()" class="btn-primary text-white px-8 py-4 rounded-xl font-semibold shadow-lg w-full">
-                Awesome!
-            </button>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button onclick="openModal()" class="group bg-white text-primary-600 px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:bg-slate-100 transition-all flex items-center justify-center space-x-3">
+                    <span>Start Free Trial</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                <button class="group glass-dark px-10 py-5 rounded-2xl font-bold text-lg flex items-center justify-center space-x-3">
+                    <span>Talk to Sales</span>
+                    <i data-lucide="message-circle" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                </button>
+            </div>
+            <p class="text-white/70 mt-8 text-sm">
+                14-day free trial • No credit card required • Cancel anytime
+            </p>
         </div>
-    </div>
+    </section>
 
     <!-- Footer -->
-    <footer class="glass-dark text-white py-12">
+    <footer class="bg-slate-900 text-white py-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
                 <div>
-                    <div class="flex items-center space-x-2 mb-4">
-                        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white text-xl font-bold">M</div>
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center text-white text-xl font-bold">
+                            <i data-lucide="cpu" class="w-6 h-6"></i>
+                        </div>
                         <span class="text-xl font-bold">MeetingAI Pro</span>
                     </div>
-                    <p class="text-slate-400">Never take meeting notes again. AI that attends meetings for you.</p>
+                    <p class="text-slate-400 leading-relaxed">Never take meeting notes again. AI-powered transcription and summaries.</p>
                 </div>
                 <div>
                     <h4 class="font-bold mb-4">Product</h4>
-                    <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-white">Features</a></li>
-                        <li><a href="#" class="hover:text-white">Pricing</a></li>
-                        <li><a href="#" class="hover:text-white">Integrations</a></li>
+                    <ul class="space-y-3 text-slate-400">
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#pricing" class="hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Integrations</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-bold mb-4">Company</h4>
-                    <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-white">About</a></li>
-                        <li><a href="#" class="hover:text-white">Blog</a></li>
-                        <li><a href="#" class="hover:text-white">Contact</a></li>
+                    <ul class="space-y-3 text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="font-bold mb-4">Legal</h4>
-                    <ul class="space-y-2 text-slate-400">
-                        <li><a href="#" class="hover:text-white">Privacy</a></li>
-                        <li><a href="#" class="hover:text-white">Terms</a></li>
-                        <li><a href="#" class="hover:text-white">Security</a></li>
+                    <ul class="space-y-3 text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Security</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-slate-700 pt-8 text-center text-slate-400">
-                <p>&copy; 2026 MeetingAI Pro, Inc. All rights reserved.</p>
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-slate-500 text-sm">© 2026 MeetingAI Pro. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <i data-lucide="twitter" class="w-5 h-5 text-slate-400 hover:text-white cursor-pointer transition-colors"></i>
+                    <i data-lucide="linkedin" class="w-5 h-5 text-slate-400 hover:text-white cursor-pointer transition-colors"></i>
+                    <i data-lucide="github" class="w-5 h-5 text-slate-400 hover:text-white cursor-pointer transition-colors"></i>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden">
+        <div class="modal-backdrop absolute inset-0" onclick="closeModal()"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="glass rounded-3xl p-8 max-w-md w-full card-hover animate-scale-in">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-lg">
+                        <i data-lucide="rocket" class="w-8 h-8"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold text-slate-900 mb-2">Start Your Free Trial</h3>
+                    <p class="text-slate-600">Join 1,000+ teams transforming their meetings</p>
+                </div>
+                <form class="space-y-4" onsubmit="handleSubmit(event)">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Work Email</label>
+                        <input type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all outline-none" placeholder="you@company.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Company Name</label>
+                        <input type="text" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all outline-none" placeholder="Acme Inc.">
+                    </div>
+                    <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-bold text-lg shadow-lg">
+                        Get Started Free
+                    </button>
+                </form>
+                <p class="text-center text-xs text-slate-500 mt-4">
+                    14-day free trial • No credit card required
+                </p>
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script>
+        // Initialize Lucide icons
         lucide.createIcons();
         
+        // Modal functions
         function openModal() {
-            document.getElementById('waitlistModal').classList.remove('hidden');
-            document.getElementById('waitlistModal').classList.add('flex');
+            document.getElementById('modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
         }
         
         function closeModal() {
-            document.getElementById('waitlistModal').classList.add('hidden');
-            document.getElementById('waitlistModal').classList.remove('flex');
+            document.getElementById('modal').classList.add('hidden');
+            document.body.style.overflow = '';
         }
         
-        function closeSuccessModal() {
-            document.getElementById('successModal').classList.add('hidden');
-            document.getElementById('successModal').classList.remove('flex');
-        }
-        
-        function handleSubmit(event) {
-            event.preventDefault();
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                company: document.getElementById('company').value,
-                teamSize: document.getElementById('teamSize').value,
-                timestamp: new Date().toISOString()
-            };
-            const signups = JSON.parse(localStorage.getItem('meetingAI_signups') || '[]');
-            signups.push(formData);
-            localStorage.setItem('meetingAI_signups', JSON.stringify(signups));
+        function handleSubmit(e) {
+            e.preventDefault();
+            alert('Thanks for signing up! We\'ll be in touch soon.');
             closeModal();
-            document.getElementById('successModal').classList.remove('hidden');
-            document.getElementById('successModal').classList.add('flex');
-            document.getElementById('waitlistForm').reset();
-            console.log('Signup:', formData);
-            console.log('Total signups:', signups.length);
         }
         
-        document.getElementById('waitlistModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
+        // Scroll reveal animation
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', reveal);
+        reveal(); // Initial check
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
         });
         
-        console.log('🚀 MeetingAI Pro Landing Page Loaded');
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+        });
     </script>
 </body>
 </html>

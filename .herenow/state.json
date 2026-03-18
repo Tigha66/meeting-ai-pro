@@ -5,6 +5,12 @@
       "claimToken": "8eea9a28603293ab0b41e0da781581e2e6a57b31221ee9333459f427b706ac85",
       "claimUrl": "https://here.now/claim?slug=quick-willow-jacc&token=8eea9a28603293ab0b41e0da781581e2e6a57b31221ee9333459f427b706ac85",
       "expiresAt": "2026-03-19T01:06:32.233Z"
+    },
+    "vowful-basin-r7r5": {
+      "siteUrl": "https://vowful-basin-r7r5.here.now/",
+      "claimToken": "8edbb097c50a40e6c75f98d17cd14967bf3cd4c9b3448a6d7769755f11c4e69d",
+      "claimUrl": "https://here.now/claim?slug=vowful-basin-r7r5&token=8edbb097c50a40e6c75f98d17cd14967bf3cd4c9b3448a6d7769755f11c4e69d",
+      "expiresAt": "2026-03-19T04:17:29.091Z"
     }
   }
 }
